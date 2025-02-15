@@ -31,7 +31,8 @@ async function runReceives() {
 }
 ```
 
-## UML Diagram
+## C. UML Diagram
+<img src="MicroserviceAUML.png" alt="UML Diagram">
 
 
 
