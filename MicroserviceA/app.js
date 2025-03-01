@@ -10,15 +10,15 @@ const nodemailer = require('nodemailer');
 
 async function runReceives() {
     const sock = new zmq.Reply();
-
     await sock.bind('tcp://*:5555');
 
     for await (const [msg] of sock) {
         sendMail(JSON.parse(msg.toString()));
+        await sock.send('Email sent');
     }
 }
 
-runReceives();
+runReceives().catch(err => console.error(err));
 
 function sendMail (data) {
     const name = data.name;
