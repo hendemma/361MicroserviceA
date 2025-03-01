@@ -15,8 +15,9 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.post('/submit', (req) => {
+app.post('/submit', (req, res) => {
     runSend(JSON.stringify(req.body));
+    res.send('Done');
 });
 
 app.listen(PORT, function (err) {
@@ -28,7 +29,8 @@ async function runSend(data) {
     const sock = new zmq.Request();
     sock.connect('tcp://localhost:5555');
 
-    for (let i = 0; i < 10; i++) {
-        await sock.send(data);
-    }
+    await sock.send(data);
+    await sock.receive();
+
+    await sock.close();
 }
