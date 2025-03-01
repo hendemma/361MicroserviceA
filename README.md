@@ -10,9 +10,10 @@ async function runSend(data) {
     const sock = new zmq.Request();
     sock.connect('tcp://localhost:5555');
 
-    for (let i = 0; i < 10; i++) {
-        await sock.send(data);
-    }
+    await sock.send(data);
+    await sock.receive();
+
+    await sock.close();
 }
 ```
 
@@ -22,11 +23,11 @@ The microservice receives the data from the program using ZeroMQ. It then uses J
 ```
 async function runReceives() {
     const sock = new zmq.Reply();
-
     await sock.bind('tcp://*:5555');
 
     for await (const [msg] of sock) {
         sendMail(JSON.parse(msg.toString()));
+        await sock.send('Email sent');
     }
 }
 ```
